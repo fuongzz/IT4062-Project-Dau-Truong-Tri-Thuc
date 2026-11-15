@@ -2,17 +2,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C: Build and run active file",
+            "name": "C: Server",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/src/server",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "C: Build active file"
+            "preLaunchTask": "C: Build server"
+        },
+        {
+            "name": "C: Client",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/client",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "C: Build client"
         }
     ]
 }

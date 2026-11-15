@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "C: Build active file",
+            "label": "C: Build server",
             "type": "process",
             "command": "gcc",
             "args": [
@@ -10,23 +10,55 @@
                 "-Wall",
                 "-Wextra",
                 "-g",
-                "${file}",
-                "-lm",
+                "${workspaceFolder}/src/server.c",
+                "-lsodium",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${workspaceFolder}/src/server"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": "$gcc",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "C: Build client",
+            "type": "process",
+            "command": "gcc",
+            "args": [
+                "-std=gnu11",
+                "-Wall",
+                "-Wextra",
+                "-g",
+                "${workspaceFolder}/src/client.c",
+                "-o",
+                "${workspaceFolder}/src/client"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": "$gcc",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "C: Build project",
+            "dependsOn": [
+                "C: Build server",
+                "C: Build client"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
         }
     ]
 }

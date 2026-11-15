@@ -141,3 +141,40 @@ Trong công thức trên, `floor(x)` là lấy số nguyên xuống; vì điểm
 ## 7. Trạng thái dự án
 
 - Làm rõ luật chơi và cập nhật README.md (13/11/2026)
+
+## 8. Chạy đăng ký và đăng nhập trên terminal
+
+Bản hiện tại dùng C, TCP và libsodium trên Linux/Ubuntu hoặc WSL. Server phục vụ **một client tại một thời điểm**, cổng `8080`; client kết nối `127.0.0.1`.
+
+Cài công cụ biên dịch và thư viện (một lần):
+
+```bash
+sudo apt update
+sudo apt install build-essential libsodium-dev gdb
+```
+
+Tại **thư mục gốc repo**, biên dịch và chạy server:
+
+```bash
+gcc -std=gnu11 -Wall -Wextra -g src/server.c -lsodium -o src/server
+./src/server
+```
+
+Mở terminal thứ hai, cũng tại thư mục gốc repo:
+
+```bash
+gcc -std=gnu11 -Wall -Wextra -g src/client.c -o src/client
+./src/client
+```
+
+Trong VS Code, `Ctrl+Shift+B` build cả hai chương trình. Trong Run and Debug, chọn `C: Server` hoặc `C: Client` rồi nhấn F5; cấu hình tự build chương trình tương ứng và chạy với thư mục làm việc là gốc repo. Cần extension C/C++ của Microsoft, chạy trong WSL nếu dùng Windows.
+
+Menu chính có `1. Đăng ký` và `2. Đăng nhập`; lựa chọn khác sẽ báo lỗi. Nhập `/back` tại các bước đăng ký/đăng nhập để quay lại menu. Dùng Ctrl+D ở dòng nhập trống hoặc Ctrl+C để thoát client.
+
+- Tên đăng nhập: 3–20 ký tự ASCII thuộc `A–Z`, `a–z`, `0–9`, `_`; **phân biệt hoa thường**, đồng thời là tên hiển thị. `An123` và `an123` là hai tài khoản khác nhau.
+- Mật khẩu: 8–64 ký tự, chỉ gồm `A–Z`, `a–z`, `0–9`; có ít nhất một chữ hoa, một chữ thường và một chữ số. Khoảng trắng, dấu `_`, ký tự đặc biệt và chữ có dấu đều không hợp lệ. Khi nhập trên terminal, mật khẩu được ẩn.
+- Đăng ký cần xác nhận mật khẩu. Thành công thì quay về menu để đăng nhập. Đăng nhập sai thì báo lỗi và về menu; thành công thì hiện lời chào rồi kết thúc kết nối ở bản hiện tại. Server tiếp tục chờ client tiếp theo.
+
+Server tự tạo `data/accounts.tsv` **tương đối với thư mục chạy server**. Luôn chạy từ gốc repo như trên để dùng chung một file dữ liệu. Mỗi dòng gồm `id`, `username`, `password_hash`, phân cách bằng tab; không có dòng tiêu đề. Mật khẩu được băm Argon2id bằng libsodium; chuỗi lưu chứa cả salt và tham số băm. Tài khoản vẫn còn khi khởi động lại server. Thư mục `data/` được bỏ qua trong Git.
+
+`src/accounts.h` chứa kiểm tra quy tắc, đọc/ghi và xác thực tài khoản. `src/protocol.h` chứa hàm gửi/nhận dùng chung: mỗi thông điệp gồm độ dài payload 4 byte theo network byte order, rồi một byte loại (`T`: hiển thị, `I`: nhập thường, `P`: nhập mật khẩu, `R`: trả lời) và nội dung UTF-8, không gửi byte kết thúc chuỗi. Payload tối đa 1024 byte; hàm lặp để gửi/nhận đủ dữ liệu khi TCP chia nhỏ thông điệp.
