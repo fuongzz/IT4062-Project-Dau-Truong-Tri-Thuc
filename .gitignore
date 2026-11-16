@@ -3,3 +3,7 @@
 /src/server
 /src/client
 /data/
+/tests/test_accounts
+/tests/test_protocol
+/tests/test_client
+/tests/test_server
