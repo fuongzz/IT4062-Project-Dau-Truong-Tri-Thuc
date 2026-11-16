@@ -144,26 +144,31 @@ Trong công thức trên, `floor(x)` là lấy số nguyên xuống; vì điểm
 
 ## 8. Chạy đăng ký và đăng nhập trên terminal
 
-Bản hiện tại dùng C, TCP và libsodium trên Linux/Ubuntu hoặc WSL. Server phục vụ **một client tại một thời điểm**, cổng `8080`; client kết nối `127.0.0.1`.
+Bản hiện tại dùng C, TCP và libsodium trên Linux/Ubuntu, WSL hoặc macOS. Server phục vụ **một client tại một thời điểm**, cổng `8080`; client kết nối `127.0.0.1`.
 
 Cài công cụ biên dịch và thư viện (một lần):
 
 ```bash
+# Ubuntu / WSL
 sudo apt update
 sudo apt install build-essential libsodium-dev gdb
+
+# macOS (Homebrew)
+brew install libsodium
 ```
 
-Tại **thư mục gốc repo**, biên dịch và chạy server:
+Tại **thư mục gốc repo**, biên dịch, chạy kiểm thử và chạy server:
 
 ```bash
-gcc src/server.c -lsodium -o src/server
+make          # biên dịch src/server và src/client
+make test     # biên dịch và chạy toàn bộ tests/test_*
+make clean    # xóa các file đã biên dịch
 ./src/server
 ```
 
 Mở terminal thứ hai, cũng tại thư mục gốc repo:
 
 ```bash
-gcc src/client.c -o src/client
 ./src/client
 ```
 
